@@ -7,6 +7,7 @@ SQL >
         site_uuid,
         toDate(timestamp) AS date,
         post_uuid,
+        post_type,
         device,
         browser,
         location,
@@ -19,7 +20,7 @@ SQL >
         uniqState(session_id) AS visits,
         countState() AS pageviews
     FROM analytics_hits
-        GROUP BY date, device, browser, location, source, pathname, post_uuid,site_uuid
+        GROUP BY date, device, browser, location, source, pathname, post_uuid, post_type, site_uuid
 
 TYPE MATERIALIZED
 DATASOURCE analytics_pages_mv
