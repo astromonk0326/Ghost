@@ -8,7 +8,10 @@ import {inject as service} from '@ember/service';
 import {task} from 'ember-concurrency';
 import {tracked} from '@glimmer/tracking';
 
-const SCRATCH_PROPS = ['name', 'email', 'note'];
+// 관리자 비밀번호 등록 수정 시작
+// const SCRATCH_PROPS = ['name', 'email', 'note'];
+const SCRATCH_PROPS = ['name', 'email', 'password', 'note'];
+// 관리자 비밀번호 등록 수정 종료
 
 export default class MemberController extends Controller {
     @controller members;

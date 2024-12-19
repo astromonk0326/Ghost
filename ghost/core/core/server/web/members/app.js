@@ -72,6 +72,10 @@ module.exports = function setupMembersApp() {
 
     membersApp.get('/api/integrity-token', middleware.createIntegrityToken);
 
+    // 개인회원 로그인 수정 시작
+    membersApp.post('/api/member-login-password', bodyParser.json({limit: '50mb'}), (req, res) => middleware.createSessionFromMemberLoginPassword(req, res));
+    // 개인회원 로그인 수정 종료
+
     // NOTE: this is wrapped in a function to ensure we always go via the getter
     membersApp.post(
         '/api/send-magic-link',

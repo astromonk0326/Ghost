@@ -8,6 +8,9 @@ export default Model.extend(ValidationEngine, {
 
     name: attr('string'),
     email: attr('string'),
+    // 관리자 비밀번호 등록 수정 시작
+    password: attr('string'),
+    // 관리자 비밀번호 등록 수정 종료
     note: attr('string'),
     status: attr('string'),
     createdAtUTC: attr('moment-utc'),

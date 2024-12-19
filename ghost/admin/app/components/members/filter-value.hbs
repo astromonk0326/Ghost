@@ -22,6 +22,20 @@
         data-test-input="members-filter-value"
     />
 
+{{!-- // 관리자 비밀번호 등록 수정 시작 --}}
+{{else if (eq @filter.type 'password')}}
+    <input
+        type="text"
+        value={{@filter.value}}
+        class="gh-input"
+        aria-label="Password filter"
+        {{on "input" (fn this.setInputFilterValue @filter)}}
+        {{on "blur" (fn this.updateInputFilterValue @filter)}}
+        {{on "keypress" (fn this.updateInputFilterValueOnEnter @filter)}}
+        data-test-input="members-filter-value"
+    /> 
+{{!-- // 관리자 비밀번호 등록 수정 종료 --}}
+
 {{else if (eq @filter.type 'label')}}
     <GhMemberLabelInput
         @onChange={{fn this.setLabelsFilterValue @filter}}

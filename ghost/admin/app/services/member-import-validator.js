@@ -80,6 +80,9 @@ export default class MemberImportValidatorService extends Service {
         const supportedTypes = [
             'email',
             'name',
+            // 개인회원 로그인 수정 시작
+            'password',
+            // 개인회원 로그인 수정 종료
             'note',
             'subscribed_to_emails',
             'complimentary_plan',
@@ -115,6 +118,13 @@ export default class MemberImportValidatorService extends Service {
                     mapping.name = key;
                     continue;
                 }
+
+                // 개인회원 로그인 수정 시작
+                if (!mapping.password && /password/.test(key)) {
+                    mapping.password = key;
+                    continue;
+                }
+                // 개인회원 로그인 수정 종료
 
                 if (!mapping[key] && supportedTypes.includes(key) && !(autoDetectedTypes.includes(key))) {
                     mapping[key] = key;

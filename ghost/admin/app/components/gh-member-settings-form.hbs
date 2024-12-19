@@ -37,6 +37,29 @@
                         </GhFormGroup>
                     </div>
 
+                    {{!-- // 관리자 비밀번호 등록 수정 시작 --}}
+                    {{#if this.member.isNew}}
+                        <GhFormGroup class="max-width" @errors={{this.member.errors}} @hasValidated={{this.member.hasValidated}} @property="password">
+                            <label for="member-password">Password</label>
+                            <GhTextInput
+                                @type="password"
+                                @id="member-password"
+                                @name="password"
+                                @placeholder="At least 10 characters"
+                                @autocapitalize="off"
+                                @autocorrect="off"
+                                @autocomplete="off"
+                                @value={{this.scratchMember.password}}
+                                @tabindex="3"
+                                @shouldFocus="{{if this.member.isNew true}}"
+                                @focus-out={{fn this.setProperty "password" this.scratchMember.password}}
+                                data-test-input="member-password"
+                            />
+                            <GhErrorMessage @errors={{this.member.errors}} @property="password" />
+                        </GhFormGroup>
+                    {{/if}}
+                    {{!-- // 관리자 비밀번호 등록 수정 종료 --}}
+
                     <GhFormGroup class="gh-member-labels">
                         <label for="label-input">Labels</label>
                         <GhMemberLabelInput
@@ -56,7 +79,10 @@
                             @id="member-note"
                             @name="note"
                             @class="gh-member-details-textarea"
-                            @tabindex="3"
+                            {{!-- // 관리자 비밀번호 등록 수정 시작 --}}
+                            {{!-- @tabindex="3" --}}
+                            @tabindex="4"
+                            {{!-- // 관리자 비밀번호 등록 수정 종료 --}}
                             @value={{this.scratchMember.note}}
                             {{on "input" this.updateProperty}}
                             data-test-input="member-note"

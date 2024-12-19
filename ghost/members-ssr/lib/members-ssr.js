@@ -3,6 +3,7 @@ const createCookies = require('cookies');
 const debug = require('@tryghost/debug')('members-ssr');
 
 const {
+    NoPermissionError,
     BadRequestError,
     IncorrectUsageError
 } = require('@tryghost/errors');
@@ -258,6 +259,69 @@ class MembersSSR {
 
         return member;
     }
+
+    // 개인회원 로그인 수정 시작
+    /**
+     * @method _getMemberDataFromPassword
+     *
+     * @param {string} email
+     * @param {string} password
+     *
+     * @returns {Promise<Member>} member
+     */
+    async _getMemberDataFromPassword(email, password) {
+        const api = await this._getMembersApi();
+        return api.getMemberDataFromPassword(email, password);
+    }
+
+    /**
+     * @method getMemberDataForSession
+     * @param {Request} req
+     * @param {Response} res
+     *
+     * @returns {Promise<Member>} The member the session was created for
+     */
+    async getMemberDataForSession(req, res) {
+        // if (!req.url) {
+        //     return Promise.reject(new BadRequestError({
+        //         message: 'Expected token param containing JWT'
+        //     }));
+        // }
+
+        // const {query} = parseUrl(req.url, true);
+        // if (!query || !query.token) {
+        //     return Promise.reject(new BadRequestError({
+        //         message: 'Expected token param containing JWT'
+        //     }));
+        // }
+
+        // const token = Array.isArray(query.token) ? query.token[0] : query.token;
+        // const member = await this._getMemberDataFromToken(token);
+
+        const member = await this._getMemberDataFromPassword(req.body.email, req.body.password);
+
+        if (member == null){
+            throw new NoPermissionError({
+                message: 'ID or Password is Invalid'
+            });
+        }
+
+        // perform and store geoip lookup for members when they log in
+        if (!member.geolocation) {
+            try {
+                await this._setMemberGeolocationFromIp(member.email, req.ip);
+            } catch (err) {
+                // no-op, we don't want to stop anything working due to
+                // geolocation lookup failing
+                debug(`Geolocation lookup failed: ${err.message}`);
+            }
+        }
+
+        this._setSessionCookie(req, res, member.transient_id);
+
+        return member;
+    }
+    // 개인회원 로그인 수정 종료
 
     async _cycleTransientId(memberId) {
         const api = await this._getMembersApi();

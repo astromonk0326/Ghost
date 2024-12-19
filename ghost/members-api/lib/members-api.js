@@ -19,6 +19,10 @@ const WellKnownController = require('./controllers/WellKnownController');
 const {EmailSuppressedEvent} = require('@tryghost/email-suppression-list');
 const DomainEvents = require('@tryghost/domain-events');
 
+// 개인회원 로그인 수정 시작
+const crypto = require('crypto');
+// 개인회원 로그인 수정 종료
+
 module.exports = function MembersAPI({
     tokenConfig: {
         issuer,
@@ -277,6 +281,30 @@ module.exports = function MembersAPI({
         return getMemberIdentityData(email);
     }
 
+    // 개인회원 로그인 수정 시작
+    async function getDataFromPassword(email, password) {
+        var encryptPassword = crypto.createHash('sha256').update(password).digest('hex');
+        const member = await memberRepository.get({email: email, password: encryptPassword});
+        
+        if (member) {
+            return member;
+        } else {
+            return null;
+        }
+    }
+   
+    async function getMemberDataFromPassword(email, password) {
+        const member = await getDataFromPassword(email, password);
+
+        if (member) {
+            await MemberLoginEvent.add({member_id: member.id});
+            return await getMemberIdentityData(email);
+        }
+
+        return null;
+    }
+    // 개인회원 로그인 수정 종료
+
     async function getMemberIdentityData(email) {
         return memberBREADService.read({email});
     }
@@ -396,6 +424,10 @@ module.exports = function MembersAPI({
 
         // Test helpers
         getTokenDataFromMagicLinkToken,
-        paymentsService
+        // 개인회원 로그인 수정 시작
+        paymentsService,
+        getMemberDataFromPassword,
+        getDataFromPassword
+        // 개인회원 로그인 수정 종료
     };
 };

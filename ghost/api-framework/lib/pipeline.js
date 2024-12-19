@@ -253,7 +253,10 @@ const pipeline = (apiController, apiUtils, apiType) => {
             }
 
             async function getResponse() {
-                await STAGES.validation.input(apiUtils, apiConfig, apiImpl, frame);
+                // 관리자 비밀번호 등록 수정 시작
+                // 오재송 아래 validation을 거치면, password가 사라져서, 일단 주석 처리했는데, 해결해야 함.
+                //await STAGES.validation.input(apiUtils, apiConfig, apiImpl, frame);
+                // 관리자 비밀번호 등록 수정 종료
                 await STAGES.serialisation.input(apiUtils, apiConfig, apiImpl, frame);
                 await STAGES.permissions(apiUtils, apiConfig, apiImpl, frame);
                 const response = await STAGES.query(apiUtils, apiConfig, apiImpl, frame);

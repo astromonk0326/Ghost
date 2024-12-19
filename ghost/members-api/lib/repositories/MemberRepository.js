@@ -241,6 +241,7 @@ module.exports = class MemberRepository {
      * Create a member
      * @param {Object} data
      * @param {string} data.email
+     * @param {string} data.password
      * @param {string} [data.name]
      * @param {string} [data.note]
      * @param {(string|Object)[]} [data.labels]
@@ -266,6 +267,10 @@ module.exports = class MemberRepository {
             options.batch_id = ObjectId().toHexString();
         }
 
+        // 관리자 비밀번호 등록 수정 시작
+        data.password = crypto.createHash('sha256').update(data.password).digest('hex');
+        // 관리자 비밀번호 등록 수정 종료
+
         const {labels, stripeCustomer, offerId, attribution} = data;
 
         if (labels) {
@@ -276,7 +281,10 @@ module.exports = class MemberRepository {
             });
         }
 
-        const memberData = _.pick(data, ['email', 'name', 'note', 'subscribed', 'geolocation', 'created_at', 'products', 'newsletters', 'email_disabled']);
+        // 관리자 비밀번호 등록 수정 시작
+        //const memberData = _.pick(data, ['email', 'name', 'note', 'subscribed', 'geolocation', 'created_at', 'products', 'newsletters', 'email_disabled']);
+        const memberData = _.pick(data, ['email', 'password', 'name', 'note', 'subscribed', 'geolocation', 'created_at', 'products', 'newsletters', 'email_disabled']);
+        // 관리자 비밀번호 등록 수정 종료
 
         // Generate a random transient_id
         memberData.transient_id = await this._generateTransientId();
@@ -437,8 +445,12 @@ module.exports = class MemberRepository {
             withRelated.push('newsletters');
         }
 
+        
         const memberData = _.pick(data, [
             'email',
+            // 관리자 비밀번호 등록 수정 시작
+            'password',
+            // 관리자 비밀번호 등록 수정 종료
             'name',
             'note',
             'subscribed',
@@ -453,6 +465,10 @@ module.exports = class MemberRepository {
             'email_disabled',
             'transient_id'
         ]);
+
+        // 관리자 비밀번호 등록 수정 시작
+        memberData.password = crypto.createHash('sha256').update(memberData.password).digest('hex');
+        // 관리자 비밀번호 등록 수정 종료
 
         // Trim whitespaces from expertise
         if (memberData.expertise) {

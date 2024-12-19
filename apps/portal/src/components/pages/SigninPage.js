@@ -34,11 +34,17 @@ export default class SigninPage extends React.Component {
                 errors: ValidateInputForm({fields: this.getInputFields({state}), t: this.context.t})
             };
         }, async () => {
-            const {email, phonenumber, errors} = this.state;
+            // 개인회원 로그인 수정 시작
+            //const {email, phonenumber, errors} = this.state;
+            const {email, password, errors} = this.state;
+            // 개인회원 로그인 수정 종료
             const {redirect} = this.context.pageData ?? {};
             const hasFormErrors = (errors && Object.values(errors).filter(d => !!d).length > 0);
             if (!hasFormErrors) {
-                this.context.onAction('signin', {email, phonenumber, redirect});
+                // 개인회원 로그인 수정 시작
+                //this.context.onAction('signin', {email, phonenumber, redirect});
+                this.context.onAction('memberLoginPassword', {email, password, redirect});
+                // 개인회원 로그인 수정 종료
             }
         });
     }
@@ -57,6 +63,7 @@ export default class SigninPage extends React.Component {
         }
     }
 
+    // 개인회원 로그인 수정 시작
     getInputFields({state}) {
         const {t} = this.context;
 
@@ -73,26 +80,28 @@ export default class SigninPage extends React.Component {
                 autoFocus: true
             },
             {
-                type: 'text',
-                value: state.phonenumber,
-                placeholder: '+1 (123) 456-7890',
-                // Doesn't need translation, hidden field
-                label: 'Phone number',
-                name: 'phonenumber',
-                required: false,
-                tabindex: -1,
-                autocomplete: 'off',
-                hidden: true
+                type: 'password',
+                value: state.password,
+                placeholder: '•••••••••••••••',
+                label: 'Password',
+                name: 'password',
+                required: true,
+                errorMessage: errors.password || '',
+                autoFocus: true
             }
         ];
+
         return fields;
     }
+    // 개인회원 로그인 수정 종료
 
     renderSubmitButton() {
         const {action, t} = this.context;
         let retry = false;
         const isRunning = (action === 'signin:running');
-        let label = isRunning ? t('Sending login link...') : t('Continue');
+        // 개인회원 로그인 수정 시작
+        let label = isRunning ? t('login running...') : t('Continue');
+        // 개인회원 로그인 수정 종료
         const disabled = isRunning ? true : false;
         if (action === 'signin:failed') {
             label = t('Retry');
@@ -100,7 +109,7 @@ export default class SigninPage extends React.Component {
         }
         return (
             <ActionButton
-                dataTestId='signin'
+                dataTestId='memberLoginPassword'
                 retry={retry}
                 style={{width: '100%'}}
                 onClick={e => this.handleSignin(e)}
@@ -109,23 +118,6 @@ export default class SigninPage extends React.Component {
                 label={label}
                 isRunning={isRunning}
             />
-        );
-    }
-
-    renderSignupMessage() {
-        const {brandColor, t} = this.context;
-        return (
-            <div className='gh-portal-signup-message'>
-                <div>{t('Don\'t have an account?')}</div>
-                <button
-                    data-test-button='signup-switch'
-                    className='gh-portal-btn gh-portal-btn-link'
-                    style={{color: brandColor}}
-                    onClick={() => this.context.onAction('switchPage', {page: 'signup'})}
-                >
-                    <span>{t('Sign up')}</span>
-                </button>
-            </div>
         );
     }
 
@@ -158,7 +150,6 @@ export default class SigninPage extends React.Component {
                 </div>
                 <footer className='gh-portal-signin-footer'>
                     {this.renderSubmitButton()}
-                    {this.renderSignupMessage()}
                 </footer>
             </section>
         );

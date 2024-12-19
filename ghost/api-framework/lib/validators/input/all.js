@@ -22,6 +22,9 @@ const GLOBAL_VALIDATORS = {
     slug: {isSlug: true},
     name: {},
     email: {isEmail: true},
+    // 관리자 비밀번호 등록 수정 시작
+    password: {},
+    // 관리자 비밀번호 등록 수정 종료
     filter: false,
     context: false,
     forUpdate: false,

@@ -563,7 +563,35 @@ function setupGhostApi({siteUrl = window.location.origin, apiUrl, apiKey}) {
                 },
                 body: JSON.stringify(body)
             });
+        // 개인회원 로그인 수정 시작
+        },
+        
+        async memberLoginPassword(email, password) {
+            const url = endpointFor({type: 'members', resource: 'member-login-password'});
+            const body = {
+                email,
+                password
+            };
+            
+            const res = await makeRequest({
+                url,
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            });
+
+            console.log(res);
+
+            if (res.ok) {
+                window.location.replace(siteUrl);
+                return 'Success';
+            } else {
+                throw new Error('Failed to log in, please try again');
+            }
         }
+        // 개인회원 로그인 수정 종료
     };
 
     api.init = async () => {

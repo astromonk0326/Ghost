@@ -544,6 +544,24 @@ async function trackRecommendationSubscribed({data: {recommendationId}, api}) {
     return {};
 }
 
+// 개인회원 로그인 수정 시작
+async function memberLoginPassword({data, api, state}) {
+    const {t} = state;
+    try {
+        const memberLoginPassword = await api.member.memberLoginPassword(data.email, data.password);
+        
+    } catch (e) {
+        return {
+            action: 'signin:failed',
+            popupNotification: createPopupNotification({
+                type: 'signin:failed', autoHide: false, closeable: true, state, status: 'error',
+                message: chooseBestErrorMessage(e, t('Failed to log in, please try again'), t)
+            })
+        };
+    }
+}
+// 개인회원 로그인 수정 종료
+
 const Actions = {
     togglePopup,
     openPopup,
@@ -569,7 +587,10 @@ const Actions = {
     removeEmailFromSuppressionList,
     oneClickSubscribe,
     trackRecommendationClicked,
-    trackRecommendationSubscribed
+    // 개인회원 로그인 수정 시작
+    trackRecommendationSubscribed,
+    memberLoginPassword
+    // 개인회원 로그인 수정 종료
 };
 
 /** Handle actions in the App, returns updated state */

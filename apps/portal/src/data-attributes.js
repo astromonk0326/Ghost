@@ -17,6 +17,12 @@ export function formSubmitHandler({event, form, errorEl, siteUrl, submitHandler}
     let nameInput = event.target.querySelector('input[data-members-name]');
     let autoRedirect = form?.dataset?.membersAutoredirect || 'true';
     let email = emailInput?.value;
+
+    // 관리자 비밀번호 등록 수정 시작
+    let passwordInput = event.target.querySelector('input[data-members-password]');
+    let password = passwordInput?.value;
+    // 관리자 비밀번호 등록 수정 종료
+
     let name = (nameInput && nameInput.value) || undefined;
     let emailType = undefined;
     let labels = [];
@@ -40,6 +46,9 @@ export function formSubmitHandler({event, form, errorEl, siteUrl, submitHandler}
     const urlHistory = getUrlHistory();
     const reqBody = {
         email: email,
+        // 관리자 비밀번호 등록 수정 시작
+        password: password,
+        // 관리자 비밀번호 등록 수정 종료
         emailType: emailType,
         labels: labels,
         name: name,

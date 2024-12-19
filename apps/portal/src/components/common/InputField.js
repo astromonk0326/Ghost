@@ -122,6 +122,15 @@ function InputField({
         autocorrect = 'off';
         autocapitalize = 'off';
         break;
+
+    // 개인회원 로그인 수정 시작
+    case 'input-password':
+        autocomplete = 'off';
+        autocorrect = 'off';
+        autocapitalize = 'off';
+        break;
+    // 개인회원 로그인 수정 종료
+
     case 'input-name':
         autocomplete = 'off';
         autocorrect = 'off';

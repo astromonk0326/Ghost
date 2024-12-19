@@ -423,6 +423,49 @@ const createSessionFromMagicLink = async function createSessionFromMagicLink(req
     }
 };
 
+// 개인회원 로그인 수정 시작
+const createSessionFromMemberLoginPassword = async function createSessionFromMemberLoginPassword(req, res) {
+    // req.query is a plain object, copy it to a URLSearchParams object so we can call toString()
+    const searchParams = new URLSearchParams('');
+    Object.keys(req.query).forEach((param) => {
+        // don't copy the "token" or "r" params
+        if (param !== 'token' && param !== 'r') {
+            searchParams.set(param, req.query[param]);
+        }
+    });
+
+    try {
+        const member = await membersService.ssr.getMemberDataForSession(req, res);
+        spamPrevention.membersAuth().reset(req.ip, `${member.email}login`);
+        // Note: don't reset 'member_login', or that would give an easy way around user enumeration by logging in to a manually created account
+        const subscriptions = member && member.subscriptions || [];
+
+        if (config.get('cacheMembersContent:enabled')) {
+            // Set the ghost-access cookies to enable tier-based caching
+            try {
+                const freeTier = await getFreeTier();
+                setAccessCookies(member, req, res, freeTier);
+            } catch {
+                // This is a non-critical operation, so we can safely ignore any errors
+            }
+        }
+
+        // Do a standard 302 redirect to the homepage, with success=true
+        searchParams.set('success', 'true');
+        res.redirect(`${urlUtils.getSubdir()}/?${searchParams.toString()}`);
+    } catch (err) {
+        res.writeHead(401);
+        res.end('Failed to log in, please try again');
+
+        // logging.warn(err.message);
+
+        // // Do a standard 302 redirect to the homepage, with success=false
+        // searchParams.set('success', false);
+        // res.redirect(`${urlUtils.getSubdir()}/?${searchParams.toString()}`);
+    }
+};
+// 개인회원 로그인 수정 종료
+
 // Set req.member & res.locals.member if a cookie is set
 module.exports = {
     loadMemberSession,
@@ -437,5 +480,8 @@ module.exports = {
     accessInfoSession,
     deleteSuppression,
     createIntegrityToken,
-    verifyIntegrityToken
+    // 개인회원 로그인 수정 시작
+    verifyIntegrityToken,
+    createSessionFromMemberLoginPassword
+    // 개인회원 로그인 수정 종료
 };

@@ -151,6 +151,9 @@ function serializeMember(member, options) {
         id: json.id,
         uuid: json.uuid,
         email: json.email,
+        // 관리자 비밀번호 등록 수정 시작
+        password: json.password,
+        // 관리자 비밀번호 등록 수정 종료
         name: json.name,
         note: json.note,
         geolocation: json.geolocation,
@@ -237,6 +240,7 @@ function createSerializer(debugString, serialize) {
  * @prop {string} id
  * @prop {string} uuid
  * @prop {string} email
+ * @prop {string} password 
  * @prop {string} [name]
  * @prop {string} [note]
  * @prop {null|string} geolocation

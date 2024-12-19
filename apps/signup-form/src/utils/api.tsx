@@ -52,7 +52,26 @@ export const setupGhostApi = ({siteUrl}: {siteUrl: string}) => {
             if (response.status < 200 || response.status >= 300) {
                 throw new Error(response.statusText);
             }
+        // 개인회원 로그인 수정 시작
+        },
+
+        memberLoginPassword: async (): Promise<string> => {
+            const url = endpointFor({type: 'members', resource: 'memberLoginPassword'});
+
+            const response = await fetch(url, {
+                headers: {
+                    'app-pragma': 'no-cache',
+                    'x-ghost-version': '5.90'
+                }
+            });
+
+            if (response.status < 200 || response.status >= 300) {
+                throw new Error(response.statusText);
+            }
+
+            return response.text();
         }
+        // 개인회원 로그인 수정 종료
     };
 };
 

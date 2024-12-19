@@ -18,6 +18,9 @@ module.exports.formattedMemberResponse = function formattedMemberResponse(member
     const data = {
         uuid: member.uuid,
         email: member.email,
+        // 개인회원 로그인 수정 시작
+        password: member.password,
+        // 개인회원 로그인 수정 종료
         name: member.name,
         firstname: member.name && member.name.split(' ')[0],
         expertise: member.expertise,

@@ -428,6 +428,9 @@ module.exports = {
         uuid: {type: 'string', maxlength: 36, nullable: true, unique: true, validations: {isUUID: true}},
         transient_id: {type: 'string', maxlength: 191, nullable: false, unique: true},
         email: {type: 'string', maxlength: 191, nullable: false, unique: true, validations: {isEmail: true}},
+        // 개인회원 로그인 수정 시작
+        password: {type: 'string', maxlength: 64, nullable: false},
+        // 개인회원 로그인 수정 종료
         status: {
             type: 'string', maxlength: 50, nullable: false, defaultTo: 'free', validations: {
                 isIn: [['free', 'paid', 'comped']]
